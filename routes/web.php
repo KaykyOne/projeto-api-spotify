@@ -12,6 +12,4 @@ Route::get('/', function () {
 Route::get('/spotify/login', [SpotifyController::class, 'login'])->name('spotify.login');
 Route::get('/spotify/callback', [SpotifyController::class, 'callback'])->name('spotify.callback');
 
-Route::get('/spotify/search/{name}', function (Request $request, string $name) {
-    return app(SpotifyController::class)->searchArtist($request, $name);
-});
+Route::get('/spotify/search', [SpotifyController::class, 'searchArtist']);

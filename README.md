@@ -3,3 +3,4 @@
 3 - php artisan serve 
 4 - php artisan make:controller <nome>
 5 - php artisan config:clear
+6 - php artisan make:migration create_hirings_table

@@ -81,28 +81,37 @@ class SpotifyController extends Controller
         logger()->info('User logado com sucesso', ['user_id' => $user->id]);
 
         // Retorna HTML que redireciona e envia o cookie
-        return redirect('http://localhost:3000/dashboard?token=' . $tokenData['access_token']);
+        return redirect('http://localhost:3000/dashboard?token=' . $tokenData['access_token'] . '&user_id=' . $user->id);
     }
 
-    public function searchArtist(Request $request, string $name)
+    public function searchArtist(Request $request)
     {
-        $token = $request->header('Authorization'); // pega token da query
-        if ($token) {
-            $token = str_replace('Bearer ', '', $token);
-        }else{
+        $name = $request->query('name');
+        $limit = min((int) $request->query('limit', 5), 50);
+        $offset = (int) $request->query('offset', 0);
+
+        if (!$name) {
+            return response()->json(['error' => 'Nome é obrigatório'], 400);
+        }
+
+        $token = $request->header('Authorization');
+        if (!$token) {
             return response()->json(['error' => 'Token não fornecido'], 401);
         }
 
-        $response = Http::withToken($token)
-            ->get('https://api.spotify.com/v1/search', [
+        $token = str_replace('Bearer ', '', $token);
+
+        $response = Http::withToken($token)->get(
+            'https://api.spotify.com/v1/search',
+            [
                 'q' => $name,
                 'type' => 'artist',
-                'limit' => 5,
-            ]);
+                'limit' => $limit,
+                'offset' => $offset,
+            ]
+        );
 
         return $response->json();
     }
-
-
 }
 
