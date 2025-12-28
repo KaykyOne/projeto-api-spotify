@@ -3,6 +3,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 import { Hiring } from "@/models/hiring";
 import { toast } from "react-toastify";
 
+// Fetches list of hirings for authenticated user from API
 async function listHiring() {
     const token = localStorage.getItem("auth_token");
     const user_id = localStorage.getItem("user_id");
@@ -31,6 +32,7 @@ async function listHiring() {
     }
 }
 
+// Creates new hiring contract - sends form data to backend API with autentication
 async function createHiring(data: Omit<Hiring, 'id'>) {
     const token = localStorage.getItem("auth_token");
     const user_id = localStorage.getItem("user_id");
@@ -63,6 +65,7 @@ async function createHiring(data: Omit<Hiring, 'id'>) {
     }
 }
 
+// Deletes existing hiring contract by ID - removes from database
 async function deleteHiring(id: number) {
     const token = localStorage.getItem("auth_token");
     if (!token) return null;
