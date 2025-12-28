@@ -4,14 +4,18 @@ import React, { useRef, useEffect } from 'react'
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
+// Carousel component that displays artists with auto-scrolling funcionality
 export default function Carrosel({ artists }: { artists?: Artist[] }) {
 
     const router = useRouter();
 
     if (!artists) return null;
+    // Reference to carousel container for scroll manipulation
     const carouselRef = useRef<HTMLDivElement>(null);
+    // Request animation frame ID for cleanup on unmount
     const rafId = useRef<number | null>(null);
 
+    // Auto-scroll carousel continuously - uses requestAnimationFrame for smooth animation
     useEffect(() => {
         let lastTime = 0;
 
@@ -35,9 +39,11 @@ export default function Carrosel({ artists }: { artists?: Artist[] }) {
         };
     }, []);
 
+    // Renders individual carousel items with artist image and follower count - clickable to search
     const RenderItem = ({ artist }: { artist: Artist }) => {
         if (artist.images.length === 0) return null;
         return (
+            // Carousel item - displays artist with hover scale effect and search redirect on click
             <div className='bg-neutral-800 hover:bg-neutral-700 transition-all duration-300 hover:scale-105 rounded-lg flex flex-col justify-center items-center p-4 cursor-pointer relative min-w-[450px] min-h-[300px]' onClick={() => router.push(`./search?artist=${encodeURIComponent(artist.name)}`)}>
                 <Image
                     src={artist.images[0]?.url}

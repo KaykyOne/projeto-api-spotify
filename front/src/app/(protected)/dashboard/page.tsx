@@ -8,14 +8,17 @@ import Loading from '@/components/loading';
 import { listHiring } from '@/hooks/useHiring';
 import { Hiring } from '@/models/hiring';
 
+// Dashboard page - displays welcome message, stats, and carousel of popular artists
 export default function page() {
 
   const searchParams = useSearchParams();
+  // State for storing artists and hirings data
   const [artists, setArtists] = useState<Artist[]>([]);
   const [hirings, setHirings] = useState<Hiring[]>([]);
 
   const [loading, setLoading] = useState<boolean>(false);
 
+  // Extracts authentication token and user ID from URL parameters on mount
   useEffect(() => {
     const token = searchParams.get("token");
     const user_id = searchParams.get("user_id");
@@ -29,10 +32,12 @@ export default function page() {
     }
   }, [searchParams]);
 
+  // Fetches artists and hirings data from API on component mount
   useEffect(() => {
     const search = async () => {
       setLoading(true);
       try {
+        // Searches for Lana Del Rey as default artist, shows top 10 results
         const res = await searchArtist("lana", 10, 0);
         const res2 = await listHiring();
         setArtists(res || []);
@@ -57,7 +62,7 @@ export default function page() {
         <h4 className='text-neutral-400 font-light'>Seu hub de descoberta e contratação de artistas</h4>
       </div>
 
-      {/* Stats Section */}
+      {/* Stats Section - displays total artists and contracts count */}
       {loading ? <Loading type='bone' number={2} flex={true} /> : (
         <div className='grid grid-cols-2 gap-3'>
           <div className='bg-gradient-to-br from-purple-500/20 to-purple-600/10 p-4 rounded-lg border border-purple-500/30'>
@@ -72,7 +77,7 @@ export default function page() {
       )}
 
 
-      {/* Badges & Info */}
+      {/* Badges & Info - displays achievements and trending info */}
       {loading ? <Loading type='bone' number={3} flex={true} /> : (
         <div className='flex flex-wrap gap-3 items-center'>
           <div className='px-4 py-2 rounded-lg border border-amber-600 text-amber-600 hover:bg-amber-600/10 transition'>
@@ -87,13 +92,13 @@ export default function page() {
         </div>
       )}
 
-      {/* Carousel Section */}
+      {/* Carousel Section - displays featured artists in horizontal scrolling list */}
       <div>
         <h2 className='text-2xl font-semibold mb-4'>Top Semanal</h2>
         {loading ? <Loading type='bone' flex={true} number={4} /> : <Carrosel artists={artists} />}
       </div>
 
-      {/* Recent Activity Section */}
+      {/* Recent Activity Section - shows latest hiring contracs */}
       <div className='mt-4'>
         <h2 className='text-2xl font-semibold mb-4'>Atividade Recente</h2>
 

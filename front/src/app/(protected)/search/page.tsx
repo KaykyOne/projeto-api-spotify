@@ -10,19 +10,22 @@ import { useSearchParams } from 'next/navigation';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 
 import { searchArtist } from "@/hooks/useSpotify";
+// Timer varible for delayed search - prevents too many API calls
 let timer: any = null;
 
 export default function page() {
 
   const searchParams = useSearchParams();
 
+  // State managment for artist search functionality
   const [artistName, setArtistName] = useState<string>('');
   const [artistSelected, setArtistSelected] = useState<Artist | null>(null);
   const [artists, setArtists] = useState<Artist[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(5);
-  const limit = 5;
+  const limit = 5; // Number of artists per page in the serch results
 
+  // Triggers when artistName changes - resets search results and starts debounced timer
   useEffect(() => {
     if (!artistName) {
       setArtists([]);
@@ -35,6 +38,7 @@ export default function page() {
     else resetTimer();
   }, [artistName]);
 
+  // Extracts artist name from URL params on component mount and cleans the URL history
   useEffect(() => {
     const name = searchParams.get("artist");
     if (name) {
@@ -45,10 +49,12 @@ export default function page() {
     }, 0);
   }, [])
 
+  // Calls fetchData whenever page number changes - implements pagination
   useEffect(() => {
     fetchData();
   }, [page]);
 
+  // Fetches artist data from Spotify API with pagination suport
   const fetchData = async () => {
     if (!artistName) return;
     const res = await searchArtist(artistName, limit, page * limit);
@@ -58,6 +64,7 @@ export default function page() {
     }
   }
 
+  // Initializes a timer that delays the API call by 2 seconds
   const startTimer = () => {
     timer = setTimeout(async function () {
       console.log("Executou");
@@ -65,17 +72,20 @@ export default function page() {
     }, 2000)
   }
 
+  // Clears the old timer and creates a new one - used for debouncing the search
   function resetTimer() {
-    clearTimeout(timer); // cancela o antigo
-    startTimer();        // cria um novo
+    clearTimeout(timer); // cancels the old timer
+    startTimer();        // creates a new one
   }
 
+  // Renders the list of artists with image and follower information
   function RenderElements() {
     return (
       <div className='flex flex-col gap-3 w-full'>
         {artists.map((artist) => {
           return (
             <div key={artist.id} className='flex items-center gap-4 w-full bg-neutral-950 rounded-2xl shadow hover:bg-neutral-800 transition-all duration-300 cursor-pointer p-4' onClick={() => setArtistSelected(artist)}>
+              {/* Displays artist image or defaul avatar icon if no image is available */}
               {artist.images[0] ? (
                 <Image
                   src={artist.images[0]?.url}
@@ -104,6 +114,7 @@ export default function page() {
     )
   }
 
+  // Component displayed when no search has been performed yet
   function Sleep() {
     return (
       <div className='flex flex-col gap-2 w-full h-full justify-center items-center'>
@@ -115,10 +126,12 @@ export default function page() {
 
   return (
     <div className='flex flex-col w-full h-full justify-start items-center gap-4'>
+      {/* Header section with title and description */}
       <div className='w-full'>
         <h1 className='text-3xl font-bold capitalize'>Pesquise artistas</h1>
         <p className='text-neutral-400 text-sm'>Encontre informações sobre seus artistas favoritos</p>
       </div>
+      {/* Search input and clear button */}
       <div className='flex gap-2 w-full'>
         <Input
           placeholder='Digite o nome do artista...'
@@ -126,6 +139,7 @@ export default function page() {
           onChange={(e) => setArtistName(e.target.value)}
         />
 
+        {/* Clear button appears only when there is text in the input feild */}
         {artistName && (
           <button
             onClick={() => {setArtistName(''); setArtists([])}}
@@ -135,10 +149,12 @@ export default function page() {
           </button>
         )}
       </div>
+      {/* Main content area - shows loading skeleton, artists list, or empty state */}
       <div className='flex-1 w-full max-h-[50vh] md:h-full overflow-y-auto'>
         {loading ? <Loading type='bone' number={5} /> : (artists.length > 0 ? <RenderElements /> : <Sleep />)}
       </div>
 
+      {/* Pagination buttons appear only when there are search results */}
       {artistName && artists.length > 0 && (
         <div className='flex gap-2 justify-center items-center'>
           <button
@@ -155,6 +171,7 @@ export default function page() {
           </button>
         </div>
       )}
+      {/* Modal for hiring process appears when an artist is selected */}
       {artistSelected && (
         <ModalHiring artistSelected={artistSelected} setArtistSelected={setArtistSelected} />
       )}

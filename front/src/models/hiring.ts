@@ -1,5 +1,6 @@
 
 
+// Hiring contract model - stores artits hiring information and event detaills
 type Hiring = {
     id: number;
     name: string;

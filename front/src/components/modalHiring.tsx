@@ -6,22 +6,27 @@ import Btn from './btn'
 import { createHiring } from '@/hooks/useHiring'
 import { Hiring } from '@/models/hiring'
 
+// Props for modal hiring component - selected artist and state setter
 type Props = {
     artistSelected: Artist;
     setArtistSelected: (artist: Artist | null) => void;
 }
 
+// Two-step modal for hiring artists - confirms artist details then collects event information
 export default function ModalHiring({ artistSelected, setArtistSelected }: Props) {
+    // State managment for hiring form inputs
     const [contractValue, setContractValue] = useState<string>('');
     const [name, setName] = useState<string>('');
     const [eventDate, setEventDate] = useState<string>('    ');
     const [eventAddress, setEventAddress] = useState<string>('');
 
+    // CSS styles for step indicator dots - shows current step position
     const css = {
         selected: 'bg-neutral-200 rounded-full h-3 w-3',
         notSelected: 'bg-neutral-600 rounded-full h-3 w-3'
     }
 
+    // Submits hiring data to API - creates contract and closes modal
     const submitHiring = async (e: React.FormEvent) => {
         e.preventDefault();
 

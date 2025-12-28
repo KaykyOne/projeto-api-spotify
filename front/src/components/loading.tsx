@@ -1,14 +1,17 @@
 import React from 'react'
 
+// Props for Loading skeleton component - configurable type, count, and layout
 type Props = {
-  type: "simple" | "bone"
-  number?: number
-  flex?: boolean
-  className?: string
+  type: "simple" | "bone" // Two loading animation types: simple spinner or bone skeleton
+  number?: number // Number of loading items to display
+  flex?: boolean // Use flex layout (horizontal) or column layout (vertical)
+  className?: string // Additional custom CSS classes
 }
 
+// Reusable loading component showing skeletons or spinners during data fetch
 export default function Loading({ type = 'simple', number = 1, flex = false, className = '' }: Props) {
 
+  // Returns loading animation - either spinning indicator or pulsing skeleton
   const CardLoading = () => {
     return (
       type == "bone" ?
