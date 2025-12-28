@@ -6,12 +6,14 @@ import Image from 'next/image';
 import { Artist } from "@/models/artist";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ModalHiring from '@/components/modalHiring';
+import { useSearchParams } from 'next/navigation';
 
 import { searchArtist } from "@/hooks/useSpotify";
-import Btn from '@/components/btn';
 let timer: any = null;
 
 export default function page() {
+
+  const searchParams = useSearchParams();
 
   const [artistName, setArtistName] = useState<string>('');
   const [artistSelected, setArtistSelected] = useState<Artist | null>(null);
@@ -19,6 +21,32 @@ export default function page() {
   const [loading, setLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(5);
   const limit = 5;
+
+  useEffect(() => {
+    if (!artistName) {
+      setArtists([]);
+      setLoading(false);
+    } else {
+      setLoading(true)
+    }
+    setPage(0);
+    if (!timer) startTimer();
+    else resetTimer();
+  }, [artistName]);
+
+  useEffect(() => {
+    const name = searchParams.get("artist");
+    if (name) {
+      setArtistName(name);
+    }
+    setTimeout(() => {
+      window.history.replaceState({}, document.title, "/search");
+    }, 0);
+  }, [])
+
+  useEffect(() => {
+    fetchData();
+  }, [page]);
 
   const fetchData = async () => {
     if (!artistName) return;
@@ -83,22 +111,6 @@ export default function page() {
       </div>
     )
   }
-
-  useEffect(() => {
-    if (!artistName) {
-      setArtists([]);
-      setLoading(false);
-    } else {
-      setLoading(true)
-    }
-    setPage(0);
-    if (!timer) startTimer();
-    else resetTimer();
-  }, [artistName]);
-
-  useEffect(() => {
-    fetchData();
-  }, [page]);
 
   return (
     <div className='flex flex-col w-full h-full justify-start items-center gap-4'>

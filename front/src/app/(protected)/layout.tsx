@@ -3,6 +3,7 @@ import Navbar from "@/components/navbar";
 import Btn from "@/components/btn";
 import { useRouter } from "next/navigation";
 import ExitToAppRoundedIcon from '@mui/icons-material/ExitToAppRounded';
+import { ToastContainer } from "react-toastify";
 
 export default function RootLayout({
   children,
@@ -21,6 +22,7 @@ export default function RootLayout({
       </div>
         {children}
       <Navbar />
+      <ToastContainer position="top-left" />
     </div>
   );
 }

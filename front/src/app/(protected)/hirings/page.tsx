@@ -36,13 +36,11 @@ export default function page() {
   }
 
   const handleCancelHiring = async (hiringId: number) => {
-    const res = await deleteHiring(hiringId);
-    setSelectedHiringId(null);
+    const res = await deleteHiring(hiringId); 
+
     if (res) {
-      alert('Contratação cancelada com sucesso!');
-      setHirings(hirings.filter(hiring => hiring.id !== hiringId));
-    } else {
-      alert('Erro ao cancelar contratação. Tente novamente.');
+      setHirings(hirings.filter(e => e.id !== hiringId))
+      setSelectedHiringId(null);
     }
   }
 

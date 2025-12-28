@@ -4,11 +4,13 @@ import { useSearchParams } from "next/navigation";
 import { searchArtist } from '@/hooks/useSpotify';
 import { Artist } from '@/models/artist';
 import Carrosel from '@/components/carrosel';
+import Loading from '@/components/loading';
 
 export default function page() {
 
   const searchParams = useSearchParams();
   const [artists, setArtists] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const token = searchParams.get("token");
@@ -25,8 +27,16 @@ export default function page() {
 
   useEffect(() => {
     const search = async () => {
-      const res = await searchArtist("lana", 10, 0);
-      setArtists(res || []);
+      setLoading(true);
+      try {
+        const res = await searchArtist("lana", 10, 0);
+        setArtists(res || []);
+      }catch (error) {
+        console.error("Error fetching artists:", error);
+      }finally{
+        setLoading(false);
+      }
+
     }
 
     search();
@@ -41,7 +51,7 @@ export default function page() {
         <h4 className='text-neutral-400 font-light'>Top semanal:</h4>
       </div>
 
-      <Carrosel artists={artists} />
+      {loading ? <div className='w-full h-75   flex justify-center items-center'><Loading type='simple'/></div> : <Carrosel artists={artists} />}
     </div>
   )
 }

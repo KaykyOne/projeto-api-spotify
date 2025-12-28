@@ -34,12 +34,7 @@ export default function ModalHiring({ artistSelected, setArtistSelected }: Props
             address: eventAddress
         };
         const res = await createHiring(newHiringData);
-        if (res) {
-            alert('Contratação realizada com sucesso!');
-            setArtistSelected(null);
-        } else {
-            alert('Erro ao realizar contratação. Tente novamente.');
-        }
+        if (res) setArtistSelected(null);
     }
 
     const [num, setNum] = useState<number>(0);

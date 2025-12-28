@@ -2,8 +2,12 @@
 import { Artist } from '@/models/artist';
 import React, { useRef, useEffect } from 'react'
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function Carrosel({ artists }: { artists?: Artist[] }) {
+
+    const router = useRouter();
+
     if (!artists) return null;
     const carouselRef = useRef<HTMLDivElement>(null);
     const rafId = useRef<number | null>(null);
@@ -34,7 +38,7 @@ export default function Carrosel({ artists }: { artists?: Artist[] }) {
     const RenderItem = ({ artist }: { artist: Artist }) => {
         if (artist.images.length === 0) return null;
         return (
-            <div className='bg-neutral-800 hover:bg-neutral-700 transition-all duration-300 hover:scale-105 rounded-lg flex flex-col justify-center items-center p-4 cursor-pointer relative min-w-[450px] min-h-[300px]'>
+            <div className='bg-neutral-800 hover:bg-neutral-700 transition-all duration-300 hover:scale-105 rounded-lg flex flex-col justify-center items-center p-4 cursor-pointer relative min-w-[450px] min-h-[300px]' onClick={() => router.push(`./search?artist=${encodeURIComponent(artist.name)}`)}>
                 <Image
                     src={artist.images[0]?.url}
                     alt={artist.name}
