@@ -7,7 +7,7 @@ type Hiring = {
     user_id?: number;
     value: number;
     event_date: string;
-    adress: string;
+    address: string;
 }
 
 export { type Hiring }

@@ -12,9 +12,9 @@ export default function RootLayout({
 
   const router = useRouter();
   return (
-    <div className="flex flex-col w-full h-screen relative py-5 items-center justify-start md:pl-40 p-4">
-      <div className="flex w-full mb-6">
-        <Btn tip="back" onClick={() => router.push('/')}>
+    <div className="flex flex-col w-full h-screen relative items-center justify-start md:pl-40 p-4 md:p-1">
+      <div className="flex w-full mb-6 bg-neutral-900 p-5 rounded-2xl justify-between items-center">
+        <Btn tip="cancel" className="!w-fit px-10" onClick={() => router.push('/')}>
           Sair
           <ExitToAppRoundedIcon />
         </Btn>

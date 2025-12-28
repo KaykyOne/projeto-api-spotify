@@ -13,7 +13,7 @@ type Props = {
 
 export default function ModalHiring({ artistSelected, setArtistSelected }: Props) {
     const [contractValue, setContractValue] = useState<string>('');
-    const [yourName, setYourName] = useState<string>('');
+    const [name, setName] = useState<string>('');
     const [eventDate, setEventDate] = useState<string>('    ');
     const [eventAddress, setEventAddress] = useState<string>('');
 
@@ -24,15 +24,16 @@ export default function ModalHiring({ artistSelected, setArtistSelected }: Props
 
     const submitHiring = async (e: React.FormEvent) => {
         e.preventDefault();
-        const newHiring: Hiring = {
-            id: 0,
+
+        const newHiringData: Omit<Hiring, 'id'> =
+        {
             spotify_id: artistSelected.id,
-            name: artistSelected.name,
+            name: name,
             value: parseFloat(contractValue),
             event_date: eventDate,
-            adress: eventAddress
+            address: eventAddress
         };
-        const res = await createHiring(newHiring);
+        const res = await createHiring(newHiringData);
         if (res) {
             alert('Contratação realizada com sucesso!');
             setArtistSelected(null);
@@ -84,8 +85,8 @@ export default function ModalHiring({ artistSelected, setArtistSelected }: Props
                         <form className='flex flex-col gap-2 w-full' onSubmit={submitHiring}>
                             <label className='text-neutral-400'>Valor da Contratação (R$):</label>
                             <Input required type='number' placeholder='Valor em reais' value={contractValue} onChange={e => setContractValue(e.target.value)} />
-                            <label className='text-neutral-400'>O seu Nome:</label>
-                            <Input required type='text' placeholder='Seu nome' value={yourName} onChange={e => setYourName(e.target.value)} />
+                            <label className='text-neutral-400'>Nome do Show:</label>
+                            <Input required type='text' placeholder='Seu nome' value={name} onChange={e => setName(e.target.value)} />
                             <label className='text-neutral-400'>Data do evento:</label>
                             <Input required type='date' placeholder='Data do evento' value={eventDate} onChange={e => setEventDate(e.target.value)} />
                             <label className='text-neutral-400'>Endereço:</label>

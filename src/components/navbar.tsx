@@ -17,7 +17,7 @@ export default function Navbar() {
                 <SearchRoundedIcon/>
                 <span className="text-sm font-light">pesquisar</span>
             </Link>
-            <Link href='/contracts' className={cssDefault}>
+            <Link href='/hirings' className={cssDefault}>
                 <SummarizeRoundedIcon/>
                 <span className="text-sm font-light">contratações</span>
             </Link>

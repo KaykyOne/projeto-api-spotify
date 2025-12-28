@@ -1,6 +1,6 @@
 import React from 'react'
 
-type tips = 'button1' | 'button2' | 'submit' | 'back' | undefined
+type tips = 'button1' | 'cancel' | 'submit' | undefined
 
 type BtnProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children?: React.ReactNode
@@ -11,10 +11,9 @@ type BtnProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 export default function Btn({ children, className, tip, ...props }: BtnProps) {
 
   const csss = {
-    button1: 'bg-white py-4 px-3 flex justify-center items-center cursor-pointer transition-all duration-300 text-black hover:bg-neutral-300 w-full rounded-full',
-    button2: 'bg-white py-4 px-3 flex justify-center items-center cursor-pointer transition-all duration-300 text-black hover:bg-neutral-300 w-full rounded-full',
+    button1: 'bg-white py-4 flex gap-4 px-3 flex justify-center items-center cursor-pointer transition-all duration-300 text-black hover:bg-neutral-300 w-full rounded-full',
+    cancel: 'bg-red-800 py-4 flex gap-4 px-3 flex justify-center items-center cursor-pointer transition-all duration-300 text-white hover:bg-red-700 w-full rounded-full',
     submit: 'bg-green-500 py-4 px-3 flex justify-center items-center cursor-pointer transition-all duration-300 text-black hover:bg-green-700 w-full rounded-full',
-    back: 'bg-red-900 flex gap-2 justify-center items-center text-neutral-300 py-3 px-8 cursor-pointer transition-all duration-300 text-black hover:bg-neutral-800 rounded-full'
   }
 
   return (
