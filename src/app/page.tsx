@@ -2,10 +2,13 @@
 import Btn from "@/components/btn";
 import Input from "@/components/input";
 import Image from "next/image";
+import { useState } from "react";
+import Loading from "@/components/loading";
 
 import { login } from "@/hooks/useSpotify";
 
-export default function Home() {
+export default function Home(){
+  const [loading, setLoading] = useState(false);
 
   return (
     <main className="flex flex-col justify-center items-center h-screen w-screen">
@@ -22,7 +25,9 @@ export default function Home() {
           <h1 className="text-4xl font-black text-center">Seja Bem-Vindo</h1>
           <h2 className="text-neutral-400 text-xl font-medium text-center">Clique em iniciar para visualizar os seus artistas!</h2>
         </div>
-        <Btn onClick={() => login()}>Iniciar</Btn>
+        <Btn onClick={() => login({ setLoading })} disabled={loading} className="w-full">
+          {loading ?  <Loading type="simple"/> : "Login"}
+        </Btn>
         <p className="text-sm font-light text-neutral-500">Um oferecimento Kayky Zioti</p>
       </div>
     </main>
