@@ -29,6 +29,15 @@ body {
   width: 8px;
 }
 
+#carrosel ::-webkit-scrollbar {
+  height: 0px;
+}
+
+#carrosel {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
 ::-webkit-scrollbar-track {
   background: #111;
 }
