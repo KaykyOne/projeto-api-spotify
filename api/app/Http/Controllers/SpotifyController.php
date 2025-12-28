@@ -9,11 +9,17 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
-
+// This controller handles Spotify OAuth authentification
+// It retrives user data and tokens from Spotify API
 class SpotifyController extends Controller
 {
+    /**
+     * Initiates the Spotify login flow
+     * Generates a random state and redirects user to Spotify authorization endpoint
+     */
     public function login()
     {
+        // Generate random state for CSRF proteccion
         $state = Str::random(16);
         // DB::table('sessions')->truncate();
         $callbackUrl = 'http://127.0.0.1:8000/spotify/callback';
@@ -33,11 +39,15 @@ class SpotifyController extends Controller
 
     }
 
+    /**
+     * Handles the Spotify OAuth callback
+     * Exchange the authorization code for access tokens
+     */
     public function callback(Request $request)
     {
-        // Spotify retorna o mesmo state que foi enviado
-        // Se chegou aqui, significa que veio mesmo da Spotify
-        logger()->info('Callback recebido', ['state' => $request->state, 'code' => $request->code]);
+        // Spotify returns the same state that was sent
+        // If we reach here, it means it realy came from Spotify
+        logger()->info('Callback recieved', ['state' => $request->state, 'code' => $request->code]);
 
         if (!$request->state || !$request->code) {
             abort(400, 'State ou code faltando');
@@ -60,11 +70,13 @@ class SpotifyController extends Controller
 
         $tokenData = $response->json();
 
-        // pega dados do usuário
+        // Retrieve user data from Spotify API using the access token
         $me = Http::withToken($tokenData['access_token'])
             ->get('https://api.spotify.com/v1/me')
             ->json();
 
+        // Create or update user with Spotify data
+        // Stores tokens for future API calls and refresh
         $user = User::updateOrCreate(
             ['spotify_id' => $me['id']],
             [
@@ -76,6 +88,7 @@ class SpotifyController extends Controller
             ]
         );
 
+        // Authenticate user in the application
         Auth::login($user);
 
         logger()->info('User logado com sucesso', ['user_id' => $user->id]);
@@ -84,23 +97,32 @@ class SpotifyController extends Controller
         return redirect('http://localhost:3000/dashboard?token=' . $tokenData['access_token'] . '&user_id=' . $user->id);
     }
 
+    /**
+     * Search for artists on Spotify
+     * Requires Bearer token in Authorization header
+     */
     public function searchArtist(Request $request)
     {
+        // Extract search parameters from request query
         $name = $request->query('name');
         $limit = min((int) $request->query('limit', 5), 50);
         $offset = (int) $request->query('offset', 0);
 
+        // Validate required parameters
         if (!$name) {
-            return response()->json(['error' => 'Nome é obrigatório'], 400);
+            return response()->json(['error' => 'Name is required'], 400);
         }
 
+        // Extract and validate Bearer token for Spotify API
         $token = $request->header('Authorization');
         if (!$token) {
-            return response()->json(['error' => 'Token não fornecido'], 401);
+            return response()->json(['error' => 'Token not provided'], 401);
         }
 
         $token = str_replace('Bearer ', '', $token);
 
+        // Call Spotify API to search for artists by name
+        // Returns paginated results with limit and offset
         $response = Http::withToken($token)->get(
             'https://api.spotify.com/v1/search',
             [
@@ -111,7 +133,33 @@ class SpotifyController extends Controller
             ]
         );
 
+        // Return the response from Spotify API as JSON
         return $response->json();
     }
+
+    public function getArtistById(Request $request)
+    {
+        $id = $request->query('spotify_id');
+        if(empty($id)) {
+            return response()->json(['error' => 'Artist ID is required'], 400);
+        }
+
+         // Extract and validate Bearer token for Spotify API
+
+        $token = $request->header('Authorization');
+
+        if (!$token) {
+            return response()->json(['error' => 'Token not provided'], 401);
+        }
+
+        $token = str_replace('Bearer ', '', $token);
+
+        $response = Http::withToken($token)->get(
+            "https://api.spotify.com/v1/artists/{$id}"
+        );
+
+        return $response->json();
+    }
+
 }
 
