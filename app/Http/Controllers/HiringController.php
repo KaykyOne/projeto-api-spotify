@@ -9,7 +9,6 @@ class HiringController extends Controller
 {
     function create(Request $request)
     {
-        error_log("Easdasdasd");
         logger()->info($request->all());
         $hiring = Hiring::create([
             'value' => $request->input('value'),
@@ -19,6 +18,7 @@ class HiringController extends Controller
             'user_id' => $request->input('user_id'),
             'address' => $request->input('address'),
         ]);
+
         $hiring->save();
 
         return response()->json(['message' => 'Hiring created successfully', 'hiring' => $hiring], 201);
@@ -26,6 +26,8 @@ class HiringController extends Controller
 
     function list(Request $request)
     {
+        logger()->info("Listando hirings para o user_id: " . $request->input('user_id'));
+
         $user_id = $request->input('user_id');
         $hirings = Hiring::where('user_id', $user_id)->get();
         return response()->json(['message' => 'listagem com sucesso!', 'hirings' => $hirings], 200);
