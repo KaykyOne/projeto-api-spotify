@@ -7,6 +7,7 @@ import { Artist } from "@/models/artist";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ModalHiring from '@/components/modalHiring';
 import { useSearchParams } from 'next/navigation';
+import ClearAllIcon from '@mui/icons-material/ClearAll';
 
 import { searchArtist } from "@/hooks/useSpotify";
 let timer: any = null;
@@ -118,11 +119,22 @@ export default function page() {
         <h1 className='text-3xl font-bold capitalize'>Pesquise artistas</h1>
         <p className='text-neutral-400 text-sm'>Encontre informações sobre seus artistas favoritos</p>
       </div>
-      <Input
-        placeholder='Digite o nome do artista...'
-        value={artistName}
-        onChange={(e) => setArtistName(e.target.value)}
-      />
+      <div className='flex gap-2 w-full'>
+        <Input
+          placeholder='Digite o nome do artista...'
+          value={artistName}
+          onChange={(e) => setArtistName(e.target.value)}
+        />
+
+        {artistName && (
+          <button
+            onClick={() => {setArtistName(''); setArtists([])}}
+            className='bg-neutral-800 hover:bg-neutral-700 transition p-3 rounded-lg flex justify-center items-center cursor-pointer'
+          >
+            <ClearAllIcon className='text-neutral-400' />
+          </button>
+        )}
+      </div>
       <div className='flex-1 w-full max-h-[50vh] md:h-full overflow-y-auto'>
         {loading ? <Loading type='bone' number={5} /> : (artists.length > 0 ? <RenderElements /> : <Sleep />)}
       </div>

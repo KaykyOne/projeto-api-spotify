@@ -26,7 +26,7 @@ export default function Home(){
           <h2 className="text-neutral-400 text-xl font-medium text-center">Clique em iniciar para visualizar os seus artistas!</h2>
         </div>
         <Btn onClick={() => login({ setLoading })} disabled={loading} className="w-full">
-          {loading ?  <Loading type="simple"/> : "Login"}
+          {loading ?  <Loading className="!h-fit !w-fit !min-h-0"  type="simple"/> : "Login"}
         </Btn>
         <p className="text-sm font-light text-neutral-500">Um oferecimento Kayky Zioti</p>
       </div>
